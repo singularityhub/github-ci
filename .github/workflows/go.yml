@@ -40,7 +40,7 @@ jobs:
         make -C builddir && \
         sudo make -C builddir install          
           
-    - name: Check out code into the Go module directory
+    - name: Check out code for the container build
       uses: actions/checkout@v1
 
     - name: Build Container
@@ -48,6 +48,7 @@ jobs:
         SINGULARITY_RECIPE: Singularity
         OUTPUT_CONTAINER: container.sif
       run: |
+       export PATH=/usr/local/singularity/bin:$PATH
        ls 
        if [ -f "${SINGULARITY_RECIPE}" ]; then
             singularity build ${OUTPUT_CONTAINER} ${SINGULARITY_RECIPE}
