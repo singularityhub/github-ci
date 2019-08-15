@@ -38,7 +38,7 @@ jobs:
         cd singularity && \
         ./mconfig -p /usr/local/singularity && \
         make -C builddir && \
-        make -C builddir install          
+        sudo make -C builddir install          
           
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
