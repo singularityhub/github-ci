@@ -26,9 +26,10 @@ jobs:
 
     - name: Install Singularity
       env:
-        singularity_version: 3.2.1
-        gopath: /home
+        SINGULARITY_VERSION: 3.2.1
       run: |
+        export GOPATH=$HOME/go
+        mkdir -p $GOPATH
         sudo mkdir -p /usr/local/var/singularity/mnt && \
         mkdir -p $gopath/src/github.com/sylabs && \
         cd $GOPATH/src/github.com/sylabs && \
@@ -44,8 +45,8 @@ jobs:
 
     - name: Build Container
       env:
-        singularity_recipe: Singularity
-        output_container: container.sif
+        SINGULARITY_RECIPE: Singularity
+        OUTPUT_CONTAINER: container.sif
       run: |
        ls 
        if [ -f "${SINGULARITY_RECIPE}" ]; then
