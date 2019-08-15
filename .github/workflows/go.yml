@@ -36,7 +36,7 @@ jobs:
         wget -qO- https://github.com/sylabs/singularity/releases/download/v${SINGULARITY_VERSION}/singularity-${SINGULARITY_VERSION}.tar.gz | \
         tar xzv && \
         cd singularity && \
-        ./mconfig -p /usr/local/singularity && \
+        ./mconfig -p /usr/local && \
         make -C builddir && \
         sudo make -C builddir install          
           
@@ -48,10 +48,9 @@ jobs:
         SINGULARITY_RECIPE: Singularity
         OUTPUT_CONTAINER: container.sif
       run: |
-       export PATH=/usr/local/singularity/bin:$PATH
        ls 
        if [ -f "${SINGULARITY_RECIPE}" ]; then
-            sudo singularity build ${OUTPUT_CONTAINER} ${SINGULARITY_RECIPE}
+            sudo -E singularity build ${OUTPUT_CONTAINER} ${SINGULARITY_RECIPE}
        else
            echo "${SINGULARITY_RECIPE} is not found."
            echo "Present working directory: $PWD"
