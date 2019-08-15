@@ -51,7 +51,7 @@ jobs:
        export PATH=/usr/local/singularity/bin:$PATH
        ls 
        if [ -f "${SINGULARITY_RECIPE}" ]; then
-            singularity build ${OUTPUT_CONTAINER} ${SINGULARITY_RECIPE}
+            sudo singularity build ${OUTPUT_CONTAINER} ${SINGULARITY_RECIPE}
        else
            echo "${SINGULARITY_RECIPE} is not found."
            echo "Present working directory: $PWD"
