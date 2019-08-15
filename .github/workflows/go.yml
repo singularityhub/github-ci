@@ -1,0 +1,56 @@
+name: Singularity Build
+on: [push]
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-18.04
+    steps:
+
+    - name: Set up Go 1.12
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.12
+      id: go
+
+    - name: Install Dependencies
+      run: |
+        apt-get update && apt-get install -y \
+          build-essential \
+          libssl-dev \
+          uuid-dev \
+          libgpgme11-dev \
+          squashfs-tools \
+          libseccomp-dev \
+          pkg-config
+
+    - name: Install Singularity
+      env:
+        singularity_version: 3.2.1
+      run: |
+        mkdir -p /usr/local/var/singularity/mnt && \
+        mkdir -p $GOPATH/src/github.com/sylabs && \
+        cd $GOPATH/src/github.com/sylabs && \
+        wget -qO- https://github.com/sylabs/singularity/releases/download/v${SINGULARITY_VERSION}/singularity-${SINGULARITY_VERSION}.tar.gz | \
+        tar xzv && \
+        cd singularity && \
+        ./mconfig -p /usr/local/singularity && \
+        make -C builddir && \
+        make -C builddir install          
+          
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v1
+
+    - name: Build Container
+      env:
+        singularity_recipe: Singularity
+        output_container: container.sif
+      run: |
+       ls 
+       if [ -f "${SINGULARITY_RECIPE}" ]; then
+            singularity build ${OUTPUT_CONTAINER} ${SINGULARITY_RECIPE}
+       else
+           echo "${SINGULARITY_RECIPE} is not found."
+           echo "Present working directory: $PWD"
+           ls
+       fi
