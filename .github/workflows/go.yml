@@ -27,6 +27,7 @@ jobs:
     - name: Install Singularity
       env:
         singularity_version: 3.2.1
+        gopath: /home
       run: |
         sudo mkdir -p /usr/local/var/singularity/mnt && \
         mkdir -p $GOPATH/src/github.com/sylabs && \
