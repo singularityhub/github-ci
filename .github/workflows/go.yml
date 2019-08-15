@@ -28,7 +28,7 @@ jobs:
       env:
         SINGULARITY_VERSION: 3.2.1
       run: |
-        export GOPATH=$HOME/go
+        export GOPATH=/github/home/go
         mkdir -p $GOPATH
         sudo mkdir -p /usr/local/var/singularity/mnt && \
         mkdir -p $gopath/src/github.com/sylabs && \
