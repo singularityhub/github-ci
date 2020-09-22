@@ -9,15 +9,22 @@ This is a simple example of how you can achieve:
  - build of associated container and
  - (optional) push to a storage endpoint
 
-for a reproducible build workflow. This recipe on master is intended to build
-Singularity 3.x (with GoLang).
+for a reproducible build workflow.
+
+There are two workflows configured on master that build a container:
+
+1. [native install](.github/workflows/native-install.yml) builds Singularity 3.x (with GoLang).
+2. [docker image](.github/workfolws/container.yml) builds in a [docker image](https://quay.io/repository/singularity/singularity).
+
+While the second option is faster to complete and a more simple workflow, it should be noted that docker runs with
+`--privileged` which may lead to issues with the resulting container in a non privileged situation.
 
 **Why should this be managed via Github?**
 
 Github, by way of easy integration with **native** continuous integration, is an easy way
 to have a workflow set up where multiple people can collaborate on a container recipe,
 the recipe can be tested (with whatever testing you need), discussed in pull requests,
-and tested on merge to master. If you add additional steps in the [build workflow](.github/workflows/go.yml)
+and tested on merge to master. If you add additional steps in the [build workflow](.github/workflows/native-install.yml)
 you can also use [Singularity Registry Client](http://singularityhub.github.io/sregistry-cli) to push your container to a 
 [Singularity Registry Server](https://singularityhub.github.io/sregistry) or other
 cloud storage.
@@ -34,7 +41,7 @@ that writes the configuration.
 
 ### 1. Add Your Recipes
 
-Add your Singularity recipes to this repository, and edit the [build workflow](.github/workflows/go.yml)
+Add your Singularity recipes to this repository, and edit the [build workflow](.github/workflows/native-install.yml)
 section where the container is built. The default will look for a recipe file called
 "Singularity" in the base of the respository, [as we have here](Singularity).
 For example, here is the default:
