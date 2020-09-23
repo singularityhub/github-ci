@@ -1,4 +1,4 @@
-name: Singularity Build
+name: Singularity Build (native)
 on: [push]
 jobs:
 
@@ -27,8 +27,8 @@ jobs:
     - name: Install Singularity
       env:
         SINGULARITY_VERSION: 3.2.1
+        GOPATH: /tmp/go
       run: |
-        export GOPATH=/tmp/go
         mkdir -p $GOPATH
         sudo mkdir -p /usr/local/var/singularity/mnt && \
         mkdir -p $GOPATH/src/github.com/sylabs && \
