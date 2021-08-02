@@ -26,16 +26,17 @@ jobs:
 
     - name: Install Singularity
       env:
-        SINGULARITY_VERSION: 3.2.1
+        SINGULARITY_VERSION: 3.8.1
         GOPATH: /tmp/go
       run: |
         mkdir -p $GOPATH
         sudo mkdir -p /usr/local/var/singularity/mnt && \
         mkdir -p $GOPATH/src/github.com/sylabs && \
         cd $GOPATH/src/github.com/sylabs && \
-        wget -qO- https://github.com/sylabs/singularity/releases/download/v${SINGULARITY_VERSION}/singularity-${SINGULARITY_VERSION}.tar.gz | \
+
+        wget -qO- https://github.com/sylabs/singularity/releases/download/v${SINGULARITY_VERSION}/singularity-ce-${SINGULARITY_VERSION}.tar.gz | \
         tar xzv && \
-        cd singularity && \
+        cd singularity-ce-${SINGULARITY_VERSION} && \
         ./mconfig -p /usr/local && \
         make -C builddir && \
         sudo make -C builddir install          
