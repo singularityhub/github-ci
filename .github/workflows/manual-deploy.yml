@@ -1,7 +1,8 @@
-name: Singularity Build (native)
+name: Singularity Build (manual)
 on: 
   push:
 
+    # This recipe shows how to manually define a matrix of singularity recipes (paths) to build
     # Edit the branches here if you want to change deploy behavior
     branches:
       - main
@@ -10,33 +11,22 @@ on:
   pull_request: []
 
 jobs:
-  changes:
-    name: "Changed Singularity Recipes"
-    runs-on: ubuntu-latest
-    outputs:
-      changed_file: ${{ steps.files.outputs.added_modified }}
-    steps:
-      - id: files
-        uses: jitterbit/get-changed-files@b17fbb00bdc0c0f63fcf166580804b4d2cdc2a42
-        with:
-          format: 'json'
-  
   build-test-containers:
-    needs:
-      - changes
     runs-on: ubuntu-latest
     strategy:
-      # Keep going on other deployments if anything bloops
       fail-fast: false
       matrix:
-        changed_file: ${{ fromJson(needs.changes.outputs.changed_file) }}
+        recipe: ["Singularity"]
 
-    name: Check ${{ matrix.changed_file }}
+    name: Check ${{ matrix.recipe }}
     steps:
-      - name: Continue if Singularity Recipe
+
+      - name: Check out code for the container build
+        uses: actions/checkout@v2
+
+      - name: Continue if Singularity Recipe Exists
         run: |
-          # Continue if we have a changed Singularity recipe
-          if [[ "${{ matrix.changed_file }}" = *Singularity* ]]; then
+          if [[ -f "${{ matrix.recipe }}" ]]; then
             echo "keepgoing=true" >> $GITHUB_ENV
           fi          
 
@@ -77,18 +67,14 @@ jobs:
           make -C builddir && \
           sudo make -C builddir install          
 
-      - name: Check out code for the container build
-        if: ${{ env.keepgoing == 'true' }}
-        uses: actions/checkout@v2
-
       - name: Build Container
         if: ${{ env.keepgoing == 'true' }}
         env:
-          recipe: ${{ matrix.changed_file }}
+          recipe: ${{ matrix.recipe }}
         run: |
          ls 
-         if [ -f "${{ matrix.changed_file }}" ]; then
-            sudo -E singularity build container.sif ${{ matrix.changed_file }}
+         if [ -f "${{ matrix.recipe }}" ]; then
+            sudo -E singularity build container.sif ${{ matrix.recipe }}
             tag=$(echo "${recipe/Singularity\./}")
             if [ "$tag" == "Singularity" ]; then
                 tag=latest
@@ -97,7 +83,7 @@ jobs:
             echo "Tag is $tag."
             echo "tag=$tag" >> $GITHUB_ENV
          else
-           echo "${{ matrix.changed_file }} is not found."
+           echo "${{ matrix.recipe }} is not found."
            echo "Present working directory: $PWD"
            ls
          fi
