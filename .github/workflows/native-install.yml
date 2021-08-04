@@ -43,7 +43,7 @@ jobs:
       - uses: eWaterCycle/setup-singularity@v6
         if: ${{ env.keepgoing == 'true' }}
         with:
-          singularity-version: 3.8.1
+          singularity-version: 3.8.0
 
       - name: Check out code for the container build
         if: ${{ env.keepgoing == 'true' }}
@@ -71,7 +71,11 @@ jobs:
          fi
 
       - name: Login and Deploy Container
-        if: (github.event_name != 'pull_request' && ${{ env.keepgoing == 'true' }})
+        if: (github.event_name != 'pull_request')
+        env:
+          keepgoing: ${{ env.keepgoing }}
         run: |         
-            echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login ghcr.io -u ${GITHUB_USERNAME} --password-stdin
-            singularity push container.sif oras://${GITHUB_REPOSITORY}:${tag}
+            if [[ "${keepgoing}" == "true" ]]; then
+                echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login ghcr.io -u ${GITHUB_USERNAME} --password-stdin
+                singularity push container.sif oras://${GITHUB_REPOSITORY}:${tag}
+            fi
