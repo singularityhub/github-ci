@@ -10,31 +10,73 @@ on:
   pull_request: []
 
 jobs:
-
-  build:
-    name: Build
-    runs-on: ubuntu-18.04
+  changes:
+    name: "Changed Singularity Recipes"
+    runs-on: ubuntu-latest
+    outputs:
+      changed_file: ${{ steps.files.outputs.added_modified }}
+    steps:
+      - id: files
+        uses: jitterbit/get-changed-files@b17fbb00bdc0c0f63fcf166580804b4d2cdc2a42
+        with:
+          format: 'json'
+  
+  build-test-containers:
+    needs:
+      - changes
+    runs-on: ubuntu-latest
     strategy:
+      # Keep going on other deployments if anything bloops
+      fail-fast: false
       matrix:
+        changed_file: ${{ fromJson(needs.changes.outputs.changed_file) }}
         singularity_version:
           - '3.8.1'
+
     container:
       image: quay.io/singularity/singularity:v${{ matrix.singularity_version }}
       options: --privileged
-    steps:
-    - name: Check out code for the container build
-      uses: actions/checkout@v1
 
-    - name: Build Container
-      env:
-        SINGULARITY_RECIPE: Singularity
-        OUTPUT_CONTAINER: container.sif
-      run: |
-       ls
-       if [ -f "${SINGULARITY_RECIPE}" ]; then
-           singularity build ${OUTPUT_CONTAINER} ${SINGULARITY_RECIPE}
-       else
-           echo "${SINGULARITY_RECIPE} is not found."
+    name: Check ${{ matrix.changed_file }}
+    steps:
+
+      - name: Check out code for the container builds
+        uses: actions/checkout@v2
+
+      - name: Continue if Singularity Recipe
+        run: |
+          # Continue if we have a changed Singularity recipe
+          if [[ "${{ matrix.changed_file }}" = *Singularity* ]]; then
+            echo "keepgoing=true" >> $GITHUB_ENV
+          fi          
+
+      - name: Build Container
+        if: ${{ env.keepgoing == 'true' }}
+        env:
+          recipe: ${{ matrix.changed_file }}
+        run: |
+         ls 
+         if [ -f "${{ matrix.changed_file }}" ]; then
+            sudo -E singularity build container.sif ${{ matrix.changed_file }}
+            tag=$(echo "${recipe/Singularity\./}")
+            if [ "$tag" == "Singularity" ]; then
+                tag=latest
+            fi
+            # Build the container and name by tag
+            echo "Tag is $tag."
+            echo "tag=$tag" >> $GITHUB_ENV
+         else
+           echo "${{ matrix.changed_file }} is not found."
            echo "Present working directory: $PWD"
            ls
-       fi
+         fi
+
+      - name: Login and Deploy Container
+        if: (github.event_name != 'pull_request')
+        env:
+          keepgoing: ${{ env.keepgoing }}
+        run: |         
+            if [[ "${keepgoing}" == "true" ]]; then
+                echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login ghcr.io -u ${GITHUB_USERNAME} --password-stdin
+                singularity push container.sif oras://${GITHUB_REPOSITORY}:${tag}
+            fi
