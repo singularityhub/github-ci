@@ -48,6 +48,7 @@ that writes the configuration.
 
 If you want to use the [GitHub package registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
 you'll need to follow the instructions there to enable packages for your organization, specifically "public" and "internal" packages should be allowed to be created.
+You'll also want to add a username associated with your GitHub organization to the repository secret `GHCR_USERNAME`
 
 ### 1. Add Your Recipes
 
