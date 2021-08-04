@@ -5,13 +5,16 @@
 This is a simple example of how you can achieve:
 
  - version control of your recipes
- - versioning to include image hash *and* commit id
  - build of associated container and
- - (optional) push to a storage endpoint
+ - push to a storage endpoint
 
-for a reproducible build workflow.
+for a reproducible build workflow! By default, we will build on all pull requests and deploy
+on push to main. The containers will go to an enabled GitHub package registry thanks to
+the Singularity oras endpoint.
 
-There are two workflows configured on master that build a container:
+**updated** August 2021, we can now push containers to the GitHub package registry! Woohoo!
+
+There are two workflows configured on master that build a Singularity container:
 
 1. [native install](.github/workflows/native-install.yml) builds Singularity 3.x (with GoLang).
 2. [docker image](.github/workfolws/container.yml) builds in a [docker image](https://quay.io/repository/singularity/singularity).
@@ -38,6 +41,11 @@ freedom in the rate of building, and organization of your repository, because it
 that writes the configuration.
 
 ## Quick Start
+
+### 0. Enable Packages
+
+If you want to use the [GitHub package registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
+you'll need to follow the instructions there to enable packages for your organization, specifically "public" and "internal" packages should be allowed to be created.
 
 ### 1. Add Your Recipes
 
@@ -86,9 +94,16 @@ one way to eat a reeses:
         singularity run toasty.sif
 ```
 
-### 3. Push to a registry
+### 3. Check Triggers
 
-You might be done there. But if not, you can install [Singularity Registry Client](http://singularityhub.github.io/sregistry-cli) and push to your cloud storage of choice! You will want to add python and python-dev to the dependency
+The workflow files each have a section at the top that indicates when the workflow will
+trigger. By default, we will do builds on pull requests, and deploys on pushes to a main
+branch. If you want to change this logic, edit the top of the recipe files.
+
+### 4. Push to a registry
+
+If you are good with GitHub packages, then you are good to go! Otherwise,
+if you want to push to other kinds of storage, you can install the [Singularity Registry Client](http://singularityhub.github.io/sregistry-cli) and push to your cloud storage of choice! You will want to add python and python-dev to the dependency
 install:
 
 ```yaml
