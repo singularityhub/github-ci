@@ -41,19 +41,19 @@ jobs:
             echo "keepgoing=true" >> $GITHUB_ENV
           fi          
 
-    - uses: eWaterCycle/setup-singularity@v6
-      with:
-        singularity-version: 3.8.1
+      - uses: eWaterCycle/setup-singularity@v6
+        with:
+          singularity-version: 3.8.1
 
-    - name: Check out code for the container build
-      uses: actions/checkout@v2
+      - name: Check out code for the container build
+        uses: actions/checkout@v2
 
-    - name: Build Container
-      env:
-        recipe: ${{ matrix.changed_file }}
-      run: |
-       ls 
-       if [ -f "${{ matrix.changed_file }}" ]; then
+      - name: Build Container
+        env:
+          recipe: ${{ matrix.changed_file }}
+        run: |
+         ls 
+         if [ -f "${{ matrix.changed_file }}" ]; then
             sudo -E singularity build container.sif ${{ matrix.changed_file }}
             tag=$(echo "${recipe/Singularity\./}")
             if [ "$tag" == "Singularity" ]; then
@@ -62,14 +62,14 @@ jobs:
             # Build the container and name by tag
             echo "Tag is $tag."
             echo "tag=$tag" >> $GITHUB_ENV
-       else
+         else
            echo "${{ matrix.changed_file }} is not found."
            echo "Present working directory: $PWD"
            ls
-       fi
+         fi
 
-      - name: Login and Deploy Container
-        if: (github.event_name != 'pull_request')
-        run: |         
+        - name: Login and Deploy Container
+          if: (github.event_name != 'pull_request')
+          run: |         
             echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login ghcr.io -u ${GITHUB_USERNAME} --password-stdin
             singularity push container.sif oras://${GITHUB_REPOSITORY}:${tag}

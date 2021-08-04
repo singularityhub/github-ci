@@ -1,5 +1,14 @@
 name: Singularity Build (docker)
-on: [push]
+on: 
+  push:
+
+    # Edit the branches here if you want to change deploy behavior
+    branches:
+      - main
+
+    # Do the builds on all pull requests (to test them)
+    pull_request: []
+
 jobs:
 
   build:
@@ -8,7 +17,7 @@ jobs:
     strategy:
       matrix:
         singularity_version:
-          - '3.5.3'
+          - '3.8.1'
     container:
       image: quay.io/singularity/singularity:v${{ matrix.singularity_version }}
       options: --privileged
