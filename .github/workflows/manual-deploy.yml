@@ -20,6 +20,10 @@ jobs:
 
     name: Check ${{ matrix.recipe }}
     steps:
+
+      - name: Check out code for the container build
+        uses: actions/checkout@v2
+
       - name: Continue if Singularity Recipe Exists
         run: |
           if [[ -f "${{ matrix.recipe }}" ]]; then
@@ -62,10 +66,6 @@ jobs:
           ./mconfig -p /usr/local && \
           make -C builddir && \
           sudo make -C builddir install          
-
-      - name: Check out code for the container build
-        if: ${{ env.keepgoing == 'true' }}
-        uses: actions/checkout@v2
 
       - name: Build Container
         if: ${{ env.keepgoing == 'true' }}
