@@ -32,7 +32,6 @@ jobs:
         changed_file: ${{ fromJson(needs.changes.outputs.changed_file) }}
 
     name: Check ${{ matrix.changed_file }}
-    if: ${{ env.keepgoing == 'true' }}
     steps:
       - name: Continue if Singularity Recipe
         run: |
@@ -42,13 +41,16 @@ jobs:
           fi          
 
       - uses: eWaterCycle/setup-singularity@v6
+        if: ${{ env.keepgoing == 'true' }}
         with:
           singularity-version: 3.8.1
 
       - name: Check out code for the container build
+        if: ${{ env.keepgoing == 'true' }}
         uses: actions/checkout@v2
 
       - name: Build Container
+        if: ${{ env.keepgoing == 'true' }}
         env:
           recipe: ${{ matrix.changed_file }}
         run: |
@@ -69,7 +71,7 @@ jobs:
          fi
 
       - name: Login and Deploy Container
-        if: (github.event_name != 'pull_request')
+        if: (github.event_name != 'pull_request' && ${{ env.keepgoing == 'true' }})
         run: |         
             echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login ghcr.io -u ${GITHUB_USERNAME} --password-stdin
             singularity push container.sif oras://${GITHUB_REPOSITORY}:${tag}
