@@ -6,8 +6,8 @@ on:
     branches:
       - main
 
-    # Do the builds on all pull requests (to test them)
-    pull_request: []
+  # Do the builds on all pull requests (to test them)
+  pull_request: []
 
 jobs:
   changes:
