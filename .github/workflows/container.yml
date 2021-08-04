@@ -72,7 +72,7 @@ jobs:
          fi
 
       - name: Login and Deploy Container
-        #if: (github.event_name != 'pull_request')
+        if: (github.event_name != 'pull_request')
         env:
           keepgoing: ${{ env.keepgoing }}
         run: |         
