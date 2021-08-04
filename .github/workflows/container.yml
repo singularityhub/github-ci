@@ -5,6 +5,7 @@ on:
     # Edit the branches here if you want to change deploy behavior
     branches:
       - main
+      - master
 
   # Do the builds on all pull requests (to test them)
   pull_request: []
