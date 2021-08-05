@@ -17,8 +17,8 @@ the Singularity oras endpoint.
 There are three workflows configured as examples to build and deploy Singularity containers:
 
 1. [native install](.github/workflows/native-install.yml) discovers Singularity* changed files, and builds Singularity 3.x (with GoLang) natively, deploys to GitHub packages.
-2. [docker image](.github/workfolws/container.yml) discovers Singularity* changed files, and builds in a [docker image](https://quay.io/repository/singularity/singularity), also deploys to GitHub packages.
-3. [manual deploy](.github/workfolws/manual-deploy.yml) takes a list of manually specified Singularity recipes (that aren't required to be changed), builds Singularity 3.x natively, and deploys to GitHub packages.
+2. [docker image](.github/workflows/container.yml) discovers Singularity* changed files, and builds in a [docker image](https://quay.io/repository/singularity/singularity), also deploys to GitHub packages.
+3. [manual deploy](.github/workflows/manual-deploy.yml) takes a list of manually specified Singularity recipes (that aren't required to be changed), builds Singularity 3.x natively, and deploys to GitHub packages.
 
 While the "build in a container" option is faster to complete and a more simple workflow, it should be noted that docker runs with
 `--privileged` which may lead to issues with the resulting container in a non privileged situation. Also note that you
