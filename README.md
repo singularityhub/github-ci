@@ -45,8 +45,7 @@ that writes the configuration.
 ### 1. Enable Packages
 
 If you want to use the [GitHub package registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
-you'll need to follow the instructions there to enable packages for your organization, specifically "public" and "internal" packages should be allowed to be created.
-You'll also want to add a username associated with your GitHub organization to the repository secret `GHCR_USERNAME`
+you'll need to follow the instructions there to enable packages for your organization, specifically "public" and "internal" packages should be allowed to be created. You'll also want to add a username associated with your GitHub organization to the repository secret `GHCR_USERNAME`. If a package already exists for your repo, you may need to [follow instructions](https://docs.github.com/en/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions#upgrading-a-workflow-that-accesses-ghcrio) to updade a package from using personal access tokens to the safer `GITHUB_TOKEN`.
 
 ### 2. Add Your Recipes
 
