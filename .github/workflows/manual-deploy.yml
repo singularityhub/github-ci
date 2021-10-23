@@ -31,11 +31,11 @@ jobs:
             echo "keepgoing=true" >> $GITHUB_ENV
           fi          
 
-      - name: Set up Go 1.13
+      - name: Set up Go 1.17
         if: ${{ env.keepgoing == 'true' }}
         uses: actions/setup-go@v1
         with:
-          go-version: 1.13
+          go-version: 1.17
         id: go
 
       - name: Install Dependencies
@@ -53,7 +53,7 @@ jobs:
       - name: Install Singularity
         if: ${{ env.keepgoing == 'true' }}
         env:
-          SINGULARITY_VERSION: 3.8.1
+          SINGULARITY_VERSION: 3.8.3
           GOPATH: /tmp/go
       
         run: |
