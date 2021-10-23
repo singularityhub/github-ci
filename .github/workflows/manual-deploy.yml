@@ -13,7 +13,7 @@ on:
 
 jobs:
   build-test-containers:
-    runs-on: ubuntu-latest
+    runs-on: ghcr.io/truatpasteurdotfr/docker-c7-singularity-builder:main
     strategy:
       fail-fast: false
       matrix:
