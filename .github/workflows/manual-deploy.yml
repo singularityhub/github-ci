@@ -13,7 +13,9 @@ on:
 
 jobs:
   build-test-containers:
-    runs-on: quay.io/singularity/singularity:v3.8.3
+    runs-on: ubuntu-latest
+      container:
+        images: quay.io/singularity/singularity:v3.8.3
     strategy:
       fail-fast: false
       matrix:
