@@ -136,7 +136,7 @@ Hold me closer... tiny container :) :D
 
 You can customize this base recipe in so many ways! For example:
 
- - If you want to build a Docker container and pull down to Singularity, that's a good approach too! We have a [container-builder-template](github.com/autamus/container-builder-template) to help you authenticate with several popular registries.
+ - If you want to build a Docker container and pull down to Singularity, that's a good approach too! We have a [container-builder-template](https://github.com/autamus/container-builder-template) to help you authenticate with several popular registries.
  - The action matrix can be extended to run builds on multiple platforms.
  - You can also do the same, but test multiple versions of Singularity.
 
